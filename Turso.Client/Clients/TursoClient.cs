@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using Turso.Client.PlatformAPI.APITokens;
 using Turso.Client.PlatformAPI.AuditLogs;
 using Turso.Client.PlatformAPI.Database;
@@ -9,27 +10,26 @@ namespace Turso.Client.Clients;
 
 public class TursoClient : ITursoClient
 {
-    public TursoClient(string apiToken, bool apiVersionOne = true)
-    {
-        if (apiVersionOne) DefaultBaseUrl = "https://api.turso.tech/v1";
+    private readonly IHttpClientFactory _httpClientFactory;
+    private HttpClient HttpClient => _httpClientFactory.CreateClient("TursoClient");
 
-        _httpClient = new HttpClient
-        {
-            BaseAddress = new Uri(DefaultBaseUrl)
-        };
-        _httpClient.DefaultRequestHeaders.Add("Bearer", apiToken);
+    public TursoClient(IHttpClientFactory httpClientFactory, string apiToken, string baseAddress = "https://api.turso.tech")
+    {
+        _httpClientFactory = httpClientFactory;
+        HttpClient.BaseAddress = new Uri(baseAddress);
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
     }
 
-    public IDatabaseService Database => _databaseService ??= new DatabaseService(_httpClient);
-    public IApiTokenService ApiTokens => _apiTokenService ??= new ApiTokenService(_httpClient);
-    public IAuditLogService AuditLogs => _auditLogService ??= new AuditLogService(_httpClient);
-    public IGroupsService Groups => _groupsService ??= new GroupsService(_httpClient);
-    public ILocationsService Locations => _locationsService ??= new LocationsService(_httpClient);
-    public IOrganizationsService Organizations => _organizationsService ??= new OrganizationsService(_httpClient);
+    public IDatabaseService Database => _databaseService ??= new DatabaseService(HttpClient);
+    public IApiTokenService ApiTokens => _apiTokenService ??= new ApiTokenService(HttpClient);
+    public IAuditLogService AuditLogs => _auditLogService ??= new AuditLogService(HttpClient);
+    public IGroupsService Groups => _groupsService ??= new GroupsService(HttpClient);
+    public ILocationsService Locations => _locationsService ??= new LocationsService(HttpClient);
+    public IOrganizationsService Organizations => _organizationsService ??= new OrganizationsService(HttpClient);
 
     public void Dispose()
     {
-        _httpClient.Dispose();
+        HttpClient.Dispose();
     }
 
     private IDatabaseService _databaseService;
@@ -44,7 +44,6 @@ public class TursoClient : ITursoClient
 
     private IOrganizationsService _organizationsService;
 
-    private readonly HttpClient _httpClient;
     private static readonly int DefaultMaxRetries = 3;
     private static readonly TimeSpan DefaultRequestTimeout = TimeSpan.FromMilliseconds(30000);
     private static string DefaultBaseUrl = "https://api.turso.tech";

@@ -17,11 +17,13 @@ public static class TursoClientServiceExtensions
     public static IServiceCollection AddTursoClient(this IServiceCollection services, string baseAddress,
         string authToken)
     {
-        services.AddHttpClient<ITursoClient, TursoClient>(client =>
+        services.AddHttpClient("TursoClient", client =>
         {
             client.BaseAddress = new Uri(baseAddress);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
         });
+
+        services.AddSingleton<ITursoClient, TursoClient>();
 
         // Singleton services
         services.AddSingleton<IApiTokenService, ApiTokenService>();
