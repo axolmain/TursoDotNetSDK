@@ -1,3 +1,5 @@
+using Turso.Client.PlatformAPI.Locations.Models.Response;
+
 namespace Turso.Client.PlatformAPI.Locations;
 
 public interface ILocationsService
