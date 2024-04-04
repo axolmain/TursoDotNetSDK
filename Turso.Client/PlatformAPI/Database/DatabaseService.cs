@@ -2,8 +2,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Turso.Client.Configuration;
-using Turso.Client.PlatformAPI.Database.Enums;
-using Turso.Client.PlatformAPI.Database.Models;
 using Turso.Client.PlatformAPI.Database.Models.Request;
 using Turso.Client.PlatformAPI.Database.Models.Response;
 
