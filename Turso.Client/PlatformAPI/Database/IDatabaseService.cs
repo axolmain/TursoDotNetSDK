@@ -2,6 +2,7 @@ using Turso.Client.PlatformAPI.Database.Enums;
 using Turso.Client.PlatformAPI.Database.Models;
 using Turso.Client.PlatformAPI.Database.Models.Request;
 using Turso.Client.PlatformAPI.Database.Models.Response;
+using Turso.Client.PlatformAPI.GenericModels;
 
 namespace Turso.Client.PlatformAPI.Database;
 
