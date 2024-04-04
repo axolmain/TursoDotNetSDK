@@ -1,6 +1,8 @@
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Turso.Client.Configuration;
+using Turso.Client.PlatformAPI.Database.Enums;
 using Turso.Client.PlatformAPI.Database.Models;
 using Turso.Client.PlatformAPI.Database.Models.Request;
 using Turso.Client.PlatformAPI.Database.Models.Response;
@@ -18,14 +20,7 @@ public class DatabaseService : IDatabaseService
         _httpClient = httpClient;
     }
     
-    /// <summary>
-    /// Returns a list of databases belonging to the organization or user.
-    /// </summary>
-    /// <param name="organizationName">The name of the organization or user.</param>
-    /// <returns>
-    /// A list of all Databases and their identities found in
-    /// <a href="https://docs.turso.tech/api-reference/databases/list">Turso Documentation</a>
-    /// </returns>
+    /// <inheritdoc />
     public async Task<ListDatabasesResponse> ListDatabasesAsync(string organizationName)
     {
         var requestUri = $"/organizations/{organizationName}/databases";
@@ -53,21 +48,12 @@ public class DatabaseService : IDatabaseService
         }
     }
 
-    /// <summary>
-    /// Creates a new database in a group for the organization or user.
-    /// </summary>
-    /// <param name="organizationName">The name of the organization or user.</param>
-    /// <param name="createRequest">The body of a Database API request with all desired specifications set.</param>
-    /// <returns></returns>
-    /// <exception cref="InvalidOperationException"></exception>
-    /// <exception cref="ApplicationException"></exception>
+    /// <inheritdoc />
     public async Task<CreateDatabaseResponse> CreateDatabaseAsync(string organizationName, CreateDatabaseRequest createRequest)
     {
         var requestUri = $"/organizations/{organizationName}/databases";
         
         var content = new StringContent(JsonSerializer.Serialize(createRequest), Encoding.UTF8, "application/json");
-
-        JsonSerializer.Serialize(createRequest);
 
         try
         {
@@ -92,13 +78,7 @@ public class DatabaseService : IDatabaseService
         }
     }
 
-    /// <summary>
-    /// Returns a database belonging to the organization or user.
-    /// </summary>
-    /// <param name="organizationName">The name of the organization or the user.</param>
-    /// <param name="databaseName">The name of the database.</param>
-    /// <returns>A TursoDB Database.</returns>
-    public async Task<Models.Database> RetrieveDatabaseAsync(string organizationName, string databaseName)
+    public async Task<Models.Database> GetDatabaseAsync(string organizationName, string databaseName)
     {
         var requestUri = $"/organizations/{organizationName}/databases/{databaseName}";
         
@@ -142,7 +122,7 @@ public class DatabaseService : IDatabaseService
                 await JsonResponseHandler.DeserializeResponseAsync<UpdateDatabaseResponse>(jsonResponse);
 
             return tokenResponse ??
-                   throw new InvalidOperationException("Failed to deserialize the API token response.");
+                   throw new InvalidOperationException($"Failed to deserialize the UpdateDatabase response for {databaseName}.");
         }
         catch (HttpRequestException e)
         {
@@ -150,11 +130,11 @@ public class DatabaseService : IDatabaseService
         }
         catch (Exception e)
         {
-            throw new ApplicationException("An error occurred while creating the API token.", e);
+            throw new ApplicationException($"An error occurred while updating the database {databaseName}.", e);
         }
     }
 
-    public async Task<RetrieveDatabaseUsageResponse> GetDatabaseUsageAsync(string organizationName, string databaseName, 
+    public async Task<GetDatabaseUsageResponse> GetDatabaseUsageAsync(string organizationName, string databaseName, 
         DateTime from, DateTime to)
     {
         string fromFormatted = from.ToUniversalTime().ToString("u").Replace(" ", "T");
@@ -169,7 +149,7 @@ public class DatabaseService : IDatabaseService
 
             var jsonResponse = await response.Content.ReadAsStreamAsync();
             var tokenResponse =
-                await JsonResponseHandler.DeserializeResponseAsync<RetrieveDatabaseUsageResponse>(jsonResponse);
+                await JsonResponseHandler.DeserializeResponseAsync<GetDatabaseUsageResponse>(jsonResponse);
 
             return tokenResponse ??
                    throw new InvalidOperationException("Failed to deserialize the API token response.");
@@ -184,39 +164,193 @@ public class DatabaseService : IDatabaseService
         }
     }
 
-    public async Task<StatsResponse> GetDatabaseStatsAsync(string organizationName, string databaseName)
+    public async Task<GetDatabaseStatsResponse> GetDatabaseStatsAsync(string organizationName, string databaseName)
     {
-        throw new NotImplementedException();
+        var requestUri = $"/organizations/{organizationName}/databases/{databaseName}/stats";
+        
+        try
+        {
+            var response = await _httpClient.GetAsync(requestUri);
+
+            response.EnsureSuccessStatusCode();
+
+            var jsonResponse = await response.Content.ReadAsStreamAsync();
+            var tokenResponse =
+                await JsonResponseHandler.DeserializeResponseAsync<GetDatabaseStatsResponse>(jsonResponse);
+
+            return tokenResponse ??
+                   throw new InvalidOperationException($"Failed to get the database stats for {databaseName}.");
+        }
+        catch (HttpRequestException e)
+        {
+            throw new ApplicationException("A network error occurred.", e);
+        }
+        catch (Exception e)
+        {
+            throw new ApplicationException($"An error occurred while getting the database stats for {databaseName}.", e);
+        }
     }
 
-    public Task DeleteDatabaseAsync(string organizationName, string databaseName)
+    public async Task<DeleteDatabaseResponse> DeleteDatabaseAsync(string organizationName, string databaseName)
     {
-        throw new NotImplementedException();
+        var requestUri = $"/organizations/{organizationName}/database/{databaseName}";
+
+        try
+        {
+            var response = await _httpClient.DeleteAsync(requestUri);
+
+            response.EnsureSuccessStatusCode();
+
+            var jsonResponse = await response.Content.ReadAsStreamAsync();
+            var tokenResponse =
+                await JsonResponseHandler.DeserializeResponseAsync<DeleteDatabaseResponse>(jsonResponse);
+
+            return tokenResponse ??
+                   throw new InvalidOperationException("Failed to deserialize the DeleteDatabase response.");
+        }
+        catch (HttpRequestException e)
+        {
+            throw new ApplicationException("A network error occurred.", e);
+        }
+        catch (Exception e)
+        {
+            throw new ApplicationException($"An error occurred while deleting the database {databaseName} " +
+                                           $"from the organization {organizationName}.", e);
+        }
+    }
+    
+    public async Task<ListInstancesResponse> ListInstancesAsync(string organizationName, string databaseName)
+    {
+        var requestUri = $"/organizations/{organizationName}/databases/{databaseName}/instances";
+        
+        try
+        {
+            var response = await _httpClient.GetAsync(requestUri);
+
+            response.EnsureSuccessStatusCode();
+
+            var jsonResponse = await response.Content.ReadAsStreamAsync();
+            var tokenResponse =
+                await JsonResponseHandler.DeserializeResponseAsync<ListInstancesResponse>(jsonResponse);
+
+            return tokenResponse ??
+                   throw new InvalidOperationException($"Failed to get the list of {databaseName} instances.");
+        }
+        catch (HttpRequestException e)
+        {
+            throw new ApplicationException("A network error occurred.", e);
+        }
+        catch (Exception e)
+        {
+            throw new ApplicationException($"An error occurred while getting the list of {databaseName} instances.", e);
+        }
     }
 
-    public async Task<ListInstancesResponse> ListInstancesAsync(string organizationName)
+    public async Task<RetrieveInstanceResponse> GetInstanceAsync(string organizationName, string databaseName, string instanceName)
     {
-        throw new NotImplementedException();
+        var requestUri = $"/organizations/{organizationName}/databases/{databaseName}/instances/{instanceName}";
+        
+        try
+        {
+            var response = await _httpClient.GetAsync(requestUri);
+
+            response.EnsureSuccessStatusCode();
+
+            var jsonResponse = await response.Content.ReadAsStreamAsync();
+            var tokenResponse =
+                await JsonResponseHandler.DeserializeResponseAsync<RetrieveInstanceResponse>(jsonResponse);
+
+            return tokenResponse ??
+                   throw new InvalidOperationException($"Failed to get the database stats for {databaseName}.");
+        }
+        catch (HttpRequestException e)
+        {
+            throw new ApplicationException("A network error occurred.", e);
+        }
+        catch (Exception e)
+        {
+            throw new ApplicationException($"An error occurred while getting the database stats for {databaseName}.", e);
+        }
     }
 
-    public async Task<InstanceResponse> RetrieveInstanceAsync(string organizationName, string instanceId)
+    public async Task<CreateTokenResponse> CreateTokenAsync(string organizationName, string databaseName, 
+        CreateTokenRequest createTokenRequest)
     {
-        throw new NotImplementedException();
+        var requestUri = $"/organizations/{organizationName}/databases/{databaseName}/auth/tokens";
+        var content = new StringContent(JsonSerializer.Serialize(createTokenRequest), Encoding.UTF8, "application/json");
+
+        try
+        {
+            var response = await _httpClient.PostAsync(requestUri, content);
+            response.EnsureSuccessStatusCode();
+            var jsonResponse = await response.Content.ReadAsStreamAsync();
+            var tokenResponse = await JsonResponseHandler.DeserializeResponseAsync<CreateTokenResponse>(jsonResponse);
+
+            return tokenResponse ?? throw new InvalidOperationException("Failed to deserialize the CreateToken response.");
+        }
+        catch (HttpRequestException e)
+        {
+            throw new ApplicationException("A network error occurred while creating a token.", e);
+        }
+        catch (Exception e)
+        {
+            throw new ApplicationException($"An error occurred while creating a token for the database {databaseName}.", e);
+        }
     }
 
-    public async Task<TokenResponse> CreateTokenAsync(CreateTokenRequest tokenRequest)
+
+    public async Task InvalidateTokensAsync(string organizationName, string databaseName)
     {
-        throw new NotImplementedException();
+        var requestUri = $"/organizations/{organizationName}/databases/{databaseName}/auth/rotate";
+
+        try
+        {
+            var response = await _httpClient.PostAsync(requestUri, null); // Assuming no body is required
+            response.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException e)
+        {
+            throw new ApplicationException("A network error occurred while invalidating tokens.", e);
+        }
+        catch (Exception e)
+        {
+            throw new ApplicationException($"An error occurred while invalidating tokens for the database {databaseName}.", e);
+        }
     }
 
-    public Task InvalidateTokensAsync(InvalidateTokensRequest invalidateRequest)
-    {
-        throw new NotImplementedException();
-    }
 
-    public async Task<UploadDumpResponse> UploadDumpAsync(string organizationName, UploadDumpRequest uploadRequest)
+    public async Task<UploadDumpResponse> UploadDumpAsync(string organizationName, string databaseName,
+        UploadDumpRequest uploadDumpRequest)
     {
-        throw new NotImplementedException();
+        var requestUri = $"/organizations/{organizationName}/databases/{databaseName}/dumps";
+
+        try
+        {
+            using (var content = new MultipartFormDataContent())
+            {
+                var fileContent = new ByteArrayContent(uploadDumpRequest.DumpFileContent);
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+
+                content.Add(fileContent, "file", uploadDumpRequest.FileName);
+                var response = await _httpClient.PostAsync(requestUri, content);
+
+                response.EnsureSuccessStatusCode();
+
+                var jsonResponse = await response.Content.ReadAsStreamAsync();
+                var dumpResponse = await JsonResponseHandler.DeserializeResponseAsync<UploadDumpResponse>(jsonResponse);
+                return dumpResponse ??
+                       throw new InvalidOperationException("Failed to deserialize the UploadDump response.");
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            throw new ApplicationException("A network error occurred while uploading a dump.", e);
+        }
+        catch (Exception e)
+        {
+            throw new ApplicationException($"An error occurred while uploading a dump to the database {databaseName}.",
+                e);
+        }
     }
 
     private readonly HttpClient _httpClient;
