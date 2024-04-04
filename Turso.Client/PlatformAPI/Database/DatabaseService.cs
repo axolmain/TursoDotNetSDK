@@ -4,6 +4,7 @@ using System.Text.Json;
 using Turso.Client.Configuration;
 using Turso.Client.PlatformAPI.Database.Models.Request;
 using Turso.Client.PlatformAPI.Database.Models.Response;
+using Turso.Client.PlatformAPI.GenericModels;
 
 namespace Turso.Client.PlatformAPI.Database;
 
