@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Turso.Client", "Turso.Client\Turso.Client.csproj", "{4E3DEB20-0E3E-455C-A852-AF9E523E7C0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Turso.Test", "Turso.Test\Turso.Test.csproj", "{89D6BA92-AA5D-4B1C-99C6-F98BAB9E93B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{4E3DEB20-0E3E-455C-A852-AF9E523E7C0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E3DEB20-0E3E-455C-A852-AF9E523E7C0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E3DEB20-0E3E-455C-A852-AF9E523E7C0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89D6BA92-AA5D-4B1C-99C6-F98BAB9E93B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89D6BA92-AA5D-4B1C-99C6-F98BAB9E93B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89D6BA92-AA5D-4B1C-99C6-F98BAB9E93B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89D6BA92-AA5D-4B1C-99C6-F98BAB9E93B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
