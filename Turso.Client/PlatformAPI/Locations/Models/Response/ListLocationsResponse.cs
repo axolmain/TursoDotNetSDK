@@ -1,4 +1,4 @@
-using Turso.Client.PlatformAPI.Groups.Enums;
+using Turso.Client.PlatformAPI.Locations.Enums;
 
 namespace Turso.Client.PlatformAPI.Locations.Models.Response;
 

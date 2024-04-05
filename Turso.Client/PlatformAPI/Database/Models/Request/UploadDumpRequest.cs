@@ -1,7 +1,7 @@
 namespace Turso.Client.PlatformAPI.Database.Models.Request;
 
 /// <summary>
-/// Represents a request to upload a database dump.
+/// Represents a Request to upload a database dump.
 /// </summary>
 public class UploadDumpRequest
 {

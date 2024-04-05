@@ -1,6 +1,7 @@
 // Turso.Client/Configuration/TursoClientServiceExtensions.cs
 
 using System.Net.Http.Headers;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Turso.Client.Clients;
 using Turso.Client.PlatformAPI.APITokens;

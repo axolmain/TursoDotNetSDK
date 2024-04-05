@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Turso.Client.PlatformAPI.Groups.Enums;
+using Turso.Client.PlatformAPI.Locations.Enums;
 using Turso.Client.PlatformAPI.Locations.Models.Response;
 
 namespace Turso.Client.Configuration;

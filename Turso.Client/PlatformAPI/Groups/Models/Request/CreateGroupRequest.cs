@@ -3,7 +3,7 @@ using Turso.Client.PlatformAPI.Groups.Models.Objects;
 namespace Turso.Client.PlatformAPI.Groups.Models.Request;
 
 /// <summary>
-/// Represents a request to create a group.
+/// Represents a Request to create a group.
 /// </summary>
 public class CreateGroupRequest
 {

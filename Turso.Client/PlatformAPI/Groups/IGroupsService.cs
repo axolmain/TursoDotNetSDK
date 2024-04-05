@@ -1,9 +1,9 @@
 using Turso.Client.PlatformAPI.Database.Models.Request;
 using Turso.Client.PlatformAPI.GenericModels;
-using Turso.Client.PlatformAPI.Groups.Enums;
 using Turso.Client.PlatformAPI.Groups.Models.Objects;
 using Turso.Client.PlatformAPI.Groups.Models.Request;
 using Turso.Client.PlatformAPI.Groups.Models.Response;
+using Turso.Client.PlatformAPI.Locations.Enums;
 using CreateTokenResponse = Turso.Client.PlatformAPI.Groups.Models.Response.CreateTokenResponse;
 
 namespace Turso.Client.PlatformAPI.Groups;
@@ -21,7 +21,7 @@ public interface IGroupsService
     /// Creates a new group for the organization or user.
     /// </summary>
     /// <param name="organizationName">The name of the organization or user.</param>
-    /// <param name="createRequest">The body of the request to create a new group.</param>
+    /// <param name="createRequest">The body of the Request to create a new group.</param>
     /// <returns>The new group which has been created.</returns>
     Task<CreateGroupResponse> CreateGroupAsync(string organizationName, CreateGroupRequest createRequest);
 

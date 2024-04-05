@@ -22,7 +22,7 @@ public interface IDatabaseService
     /// Creates a new database in a group for the organization or user.
     /// </summary>
     /// <param name="organizationName">The name of the organization or user.</param>
-    /// <param name="createRequest">The body of a Database API request with all desired specifications set.</param>
+    /// <param name="createRequest">The body of a Database API Request with all desired specifications set.</param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
     /// <exception cref="ApplicationException"></exception>

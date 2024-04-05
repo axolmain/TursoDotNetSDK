@@ -1,5 +1,8 @@
-namespace Turso.Client.PlatformAPI.Groups.Enums;
+using System.Text.Json.Serialization;
 
+namespace Turso.Client.PlatformAPI.Locations.Enums;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum LocationCode
 {
     ams, // Amsterdam, Netherlands

@@ -3,10 +3,10 @@ using System.Text.Json;
 using Turso.Client.Configuration;
 using Turso.Client.PlatformAPI.Database.Models.Request;
 using Turso.Client.PlatformAPI.GenericModels;
-using Turso.Client.PlatformAPI.Groups.Enums;
 using Turso.Client.PlatformAPI.Groups.Models.Objects;
 using Turso.Client.PlatformAPI.Groups.Models.Request;
 using Turso.Client.PlatformAPI.Groups.Models.Response;
+using Turso.Client.PlatformAPI.Locations.Enums;
 using ApplicationException = System.ApplicationException;
 using CreateTokenResponse = Turso.Client.PlatformAPI.Groups.Models.Response.CreateTokenResponse;
 

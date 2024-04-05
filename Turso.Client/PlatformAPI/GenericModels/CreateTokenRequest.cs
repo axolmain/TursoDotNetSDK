@@ -1,7 +1,7 @@
 namespace Turso.Client.PlatformAPI.GenericModels;
 
 /// <summary>
-/// Represents a request to create a new API token for a Turso database.
+/// Represents a Request to create a new API token for a Turso database.
 /// </summary>
 public class CreateTokenRequest
 {

@@ -14,6 +14,5 @@ public interface ITursoClient
     IAuditLogService AuditLogs { get; }
     IGroupsService Groups { get; }
     ILocationsService Locations { get; }
-    IOrganizationsService Organizations { get; }
-    void Dispose();
+    IOrganizationsServiceClient Organizations { get; }
 }
